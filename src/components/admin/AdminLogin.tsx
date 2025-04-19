@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import bcrypt from "bcryptjs";
 
 const formSchema = z.object({
   username: z.string().min(1, { message: "Введите имя пользователя" }),
@@ -43,9 +44,13 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // For demo purposes, hardcoded credentials
-    // In a real application, use a more secure authentication method
-    if (values.username === "admin" && values.password === "admin123") {
+    const storedUsername = import.meta.env.VITE_ADMIN_USERNAME;
+    const storedHash = import.meta.env.VITE_ADMIN_PASSWORD_HASH;
+    if (
+      values.username === storedUsername &&
+      storedHash &&
+      bcrypt.compareSync(values.password, storedHash)
+    ) {
       toast({
         title: "Вход выполнен успешно",
         description: "Добро пожаловать в панель администратора",
@@ -111,9 +116,6 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
             </form>
           </Form>
         </CardContent>
-        {/* <CardFooter className="text-center text-sm text-muted-foreground">
-          <p className="w-full">Для демо-версии: имя пользователя <strong>admin</strong>, пароль <strong>admin123</strong></p>
-        </CardFooter> */}
       </Card>
     </div>
   );

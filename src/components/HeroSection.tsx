@@ -1,27 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import heroImg from "../img/hero.webp";
 
 const HeroSection = () => {
-  const { addToCart } = useCart();
   const { toast } = useToast();
   const [heroData, setHeroData] = useState({
     title: "Элегантный держатель для ароматических палочек",
     subtitle:
       "Минималистичный дизайн, который преображает атмосферу вашего пространства, принося гармонию и эстетическое наслаждение",
     buttonText: "Заказать сейчас",
-    imageUrl: "/placeholder.svg",
+    imageUrl: heroImg,
   });
-
-  useEffect(() => {
-    const savedData = localStorage.getItem("heroSection");
-    if (savedData) {
-      setHeroData(JSON.parse(savedData));
-    }
-  }, []);
 
   const scrollToFeatures = () => {
     document.querySelector("#features")?.scrollIntoView({ behavior: "smooth" });

@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import firstImg from "../img/1.webp";
+import secondImg from "../img/2.webp";
+import thirdImg from "../img/3.webp";
+import fourthImg from "../img/4.webp";
+import fifthImg from "../img/5.webp";
+import sixthImg from "../img/6.webp";
+import seventhImg from "../img/7.webp";
 
 const GallerySection = () => {
   const [images, setImages] = useState([
-    { id: "1", src: "/placeholder.svg", alt: "Держатель спереди" },
-    { id: "2", src: "/placeholder.svg", alt: "Держатель сбоку" },
-    { id: "3", src: "/placeholder.svg", alt: "Держатель в использовании" },
-    { id: "4", src: "/placeholder.svg", alt: "Держатель в интерьере" },
-    { id: "5", src: "/placeholder.svg", alt: "Детали держателя" },
+    { id: "1", src: firstImg, alt: "Держатель спереди" },
+    { id: "2", src: secondImg, alt: "Держатель сбоку" },
+    { id: "3", src: thirdImg, alt: "Держатель в использовании" },
+    { id: "4", src: fourthImg, alt: "Держатель в интерьере" },
+    { id: "5", src: fifthImg, alt: "Детали держателя" },
+    { id: "6", src: sixthImg, alt: "Детали держателя" },
+    { id: "7", src: seventhImg, alt: "Детали держателя" },
   ]);
-
-  // Load images from localStorage on mount
-  useEffect(() => {
-    const savedData = localStorage.getItem("gallerySection");
-    if (savedData) {
-      setImages(JSON.parse(savedData));
-    }
-  }, []);
 
   return (
     <section className="bg-product-beige/10">
@@ -36,7 +37,7 @@ const GallerySection = () => {
                     <img
                       src={image.src}
                       alt={image.alt}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   </div>
                 </TabsContent>
@@ -53,7 +54,7 @@ const GallerySection = () => {
                   <img
                     src={image.src}
                     alt={`Миниатюра ${image.alt}`}
-                    className="w-full h-full object-cover rounded"
+                    className="w-full h-full object-contain rounded"
                   />
                 </TabsTrigger>
               ))}

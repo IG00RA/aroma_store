@@ -12,12 +12,6 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 type OrderData = {
   id: string;
@@ -139,9 +133,9 @@ const ThankYou = () => {
                     Не можете чекати? Зв'яжіться з нами просто зараз:
                   </p>
                   <div className="flex gap-2 justify-center">
-                    {enabledMessengers.map((messenger, index) => (
+                    {enabledMessengers.map((messenger) => (
                       <Button
-                        key={index}
+                        key={messenger.name}
                         variant="outline"
                         className="flex items-center gap-1"
                         asChild
@@ -190,24 +184,24 @@ const ThankYou = () => {
                             {orderData.checkoutData.lastName}
                           </p>
                         </div>
-                        <div>
+                        {/* <div>
                           <p className="text-gray-500">Країна доставки</p>
                           <p className="font-medium">
                             {orderData.checkoutData.country}
                           </p>
-                        </div>
-                        <div>
+                        </div> */}
+                        {/* <div>
                           <p className="text-gray-500">Місто</p>
                           <p className="font-medium">
                             {orderData.checkoutData.city}
                           </p>
-                        </div>
-                        <div>
+                        </div> */}
+                        {/* <div>
                           <p className="text-gray-500">Email</p>
                           <p className="font-medium">
                             {orderData.checkoutData.email}
                           </p>
-                        </div>
+                        </div> */}
                         <div>
                           <p className="text-gray-500">Телефон</p>
                           <p className="font-medium">
@@ -220,7 +214,7 @@ const ThankYou = () => {
                             {orderData.checkoutData.contactMethod}
                           </p>
                         </div>
-                        <div>
+                        {/* <div>
                           <p className="text-gray-500">Способ оплаты</p>
                           <p className="font-medium">
                             {orderData.checkoutData.paymentMethod ===
@@ -230,7 +224,7 @@ const ThankYou = () => {
                               ? "Оплата при отриманні"
                               : orderData.checkoutData.paymentMethod}
                           </p>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 
@@ -253,12 +247,12 @@ const ThankYou = () => {
                             </p>
                           </div>
                         ))}
-                        <div className="flex justify-between items-center pt-3">
+                        {/* <div className="flex justify-between items-center pt-3">
                           <p className="font-bold">Разом:</p>
                           <p className="font-bold text-xl">
                             {orderData.totalPrice} ₴
                           </p>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -266,7 +260,7 @@ const ThankYou = () => {
               </Card>
             )}
 
-            {orderData?.checkoutData.paymentMethod === "prepayment" &&
+            {/* {orderData?.checkoutData.paymentMethod === "prepayment" &&
               orderData.paymentDetails && (
                 <Card className="mb-6 border-blue-200">
                   <CardContent className="p-6 bg-blue-50">
@@ -352,7 +346,7 @@ const ThankYou = () => {
                     </div>
                   </CardContent>
                 </Card>
-              )}
+              )} */}
 
             <div className="flex gap-4">
               <Link to="/" className="flex-1">

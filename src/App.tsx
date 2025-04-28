@@ -8,6 +8,8 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import ThankYou from "./pages/ThankYou";
 import { CartProvider } from "./context/CartContext";
+import { Suspense } from "react";
+import { FacebookPixel } from "./components/FacebookPixel/FacebookPixel";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +26,9 @@ const App = () => (
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <Suspense fallback={null}>
+            <FacebookPixel />
+          </Suspense>
         </BrowserRouter>
       </CartProvider>
     </TooltipProvider>

@@ -16,47 +16,24 @@ import {
   Trash2,
   Phone,
   Mail,
-  Flag,
   CreditCard,
-  Truck,
-  MapPin,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { sendMessage } from "@/api/sendData";
 
 type CheckoutData = {
   firstName: string;
   lastName: string;
-  email: string;
   phone: string;
-  country: string;
-  city: string;
-  deliveryService: string;
-  postalOffice: string;
   contactMethod: string;
-  paymentMethod: string;
 };
-
-interface IntegrationSettings {
-  type: string;
-  url: string;
-  enabled: boolean;
-}
 
 interface PaymentDetails {
   iban: string;
@@ -85,14 +62,8 @@ const Cart = () => {
   const [checkoutData, setCheckoutData] = useState<CheckoutData>({
     firstName: "",
     lastName: "",
-    email: "",
     phone: "",
-    country: "ukraine",
-    city: "",
-    deliveryService: "",
-    postalOffice: "",
     contactMethod: "telegram",
-    paymentMethod: "prepayment",
   });
 
   // State for payment details
@@ -115,34 +86,8 @@ const Cart = () => {
     setOrderId(`ORD-${timestamp}-${randomSuffix}`);
   }, []);
 
-  // State for integration settings
-  const [integrationSettings, setIntegrationSettings] =
-    useState<IntegrationSettings>({
-      type: "googleSheets",
-      url: "",
-      enabled: false,
-    });
-
-  // Load integration settings and payment details
+  // Load payment details from localStorage
   useEffect(() => {
-    const savedIntegration = localStorage.getItem("integrationSettings");
-    if (savedIntegration) {
-      try {
-        const settings = JSON.parse(savedIntegration);
-        setIntegrationSettings({
-          type: settings.type || "googleSheets",
-          url: settings.url || "",
-          enabled: settings.enabled || false,
-        });
-      } catch (e) {
-        console.error(
-          "Failed to parse integration settings from localStorage",
-          e
-        );
-      }
-    }
-
-    // Load payment details
     const savedPaymentDetails = localStorage.getItem("paymentDetails");
     if (savedPaymentDetails) {
       try {
@@ -167,7 +112,7 @@ const Cart = () => {
 
   const handleCheckoutDataChange = (
     field: keyof CheckoutData,
-    value: string
+    value: string | number
   ) => {
     setCheckoutData((prev) => ({ ...prev, [field]: value }));
   };
@@ -180,67 +125,38 @@ const Cart = () => {
     setStep("cart");
   };
 
-  const sendOrderToIntegration = async (orderData: any) => {
-    if (!integrationSettings.enabled || !integrationSettings.url) {
+  const handleFinalCheckout = async () => {
+    // Перевірка валідності форми
+    if (!isFormValid()) {
+      toast({
+        title: "Помилка",
+        description: "Будь ласка, заповніть усі обов’язкові поля.",
+        variant: "destructive",
+      });
       return;
     }
 
-    try {
-      // Format the data based on integration type
-      if (integrationSettings.type === "googleSheets") {
-        // For Google Sheets, we would make a POST request to a Google Apps Script endpoint
-        const response = await fetch(integrationSettings.url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(orderData),
-          mode: "no-cors", // This is important for Google Apps Script
-        });
+    // Підготовка даних для відправки
+    const message = {
+      message: "Користувач зробив замовлення Aroma",
+      name: checkoutData.firstName,
+      surname: checkoutData.lastName,
+      messenger: checkoutData.contactMethod,
+      phone: checkoutData.phone,
+      items: items.map((item) => ({
+        color: item.color,
+        quantity: item.quantity,
+      })),
+    };
 
-        console.log("Order data sent to Google Sheets");
-      } else if (integrationSettings.type === "webhook") {
-        // For a webhook, we just send the data as is
-        const response = await fetch(integrationSettings.url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(orderData),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        console.log("Order data sent to webhook");
-      }
-    } catch (error) {
-      console.error("Error sending order data to integration:", error);
-    }
-  };
-
-  const handleFinalCheckout = () => {
-    // Prepare order data
+    // Підготовка даних замовлення для збереження
     const orderData = {
       id: orderId,
       customer: {
         firstName: checkoutData.firstName,
         lastName: checkoutData.lastName,
-        email: checkoutData.email,
         phone: checkoutData.phone,
         contactMethod: checkoutData.contactMethod,
-      },
-      shipping: {
-        country: checkoutData.country,
-        city: checkoutData.city,
-        deliveryService: checkoutData.deliveryService,
-        postalOffice: checkoutData.postalOffice,
-      },
-      payment: {
-        method: checkoutData.paymentMethod,
-        total: totalPrice,
-        currency: items[0]?.currency || "UAH", // Use the currency from the first item or default to UAH
       },
       items: items.map((item) => ({
         name: item.name,
@@ -250,33 +166,40 @@ const Cart = () => {
         subtotal: item.price * item.quantity,
         currency: item.currency || "UAH",
       })),
+      total: totalPrice,
+      currency: items[0]?.currency || "UAH",
       orderDate: new Date().toISOString(),
+      paymentDetails: paymentDetails,
     };
 
-    // Send order to integration
-    sendOrderToIntegration(orderData);
+    try {
+      // Відправка повідомлення в Telegram
+      await sendMessage(message);
 
-    // Save order data to localStorage for demo purposes
-    localStorage.setItem(
-      "lastOrder",
-      JSON.stringify({
-        ...orderData,
-        paymentDetails:
-          checkoutData.paymentMethod === "prepayment" ? paymentDetails : null,
-        checkoutData: checkoutData, // Keep the checkout data for the thank you page
-      })
-    );
+      // Збереження даних у localStorage
+      localStorage.setItem(
+        "lastOrder",
+        JSON.stringify({
+          ...orderData,
+          checkoutData: checkoutData,
+        })
+      );
 
-    toast({
-      title: "Замовлення оформлено",
-      description: `Спасибі за замовлення, ${checkoutData.firstName}! Номер вашого замовлення: ${orderId}`,
-    });
+      toast({
+        title: "Замовлення оформлено",
+        description: `Спасибі за замовлення, ${checkoutData.firstName}! Номер вашого замовлення: ${orderId}`,
+      });
 
-    clearCart();
-    setIsCartOpen(false);
-
-    // Redirect to thank you page
-    navigate("/thank-you");
+      clearCart();
+      setIsCartOpen(false);
+      navigate("/thank-you");
+    } catch (error) {
+      toast({
+        title: "Помилка",
+        description: "Не вдалося відправити замовлення. Спробуйте ще раз.",
+        variant: "destructive",
+      });
+    }
   };
 
   const isFormValid = () => {
@@ -284,14 +207,7 @@ const Cart = () => {
       checkoutData.firstName.trim() !== "" &&
       checkoutData.lastName.trim() !== "" &&
       checkoutData.phone.trim() !== "" &&
-      checkoutData.email.trim() !== "" &&
-      checkoutData.city.trim() !== "" &&
-      checkoutData.country !== "" &&
-      checkoutData.deliveryService !== "" &&
-      (checkoutData.deliveryService === "" ||
-        checkoutData.postalOffice.trim() !== "") &&
-      checkoutData.contactMethod !== "" &&
-      checkoutData.paymentMethod !== ""
+      checkoutData.contactMethod !== ""
     );
   };
 
@@ -458,19 +374,6 @@ const Cart = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={checkoutData.email}
-                          onChange={(e) =>
-                            handleCheckoutDataChange("email", e.target.value)
-                          }
-                          placeholder="example@mail.com"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
                         <Label htmlFor="phone">Номер телефону</Label>
                         <Input
                           id="phone"
@@ -482,170 +385,6 @@ const Cart = () => {
                           placeholder="+380XXXXXXXXX"
                         />
                       </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="country">Країна доставки</Label>
-                        <Select
-                          value={checkoutData.country}
-                          onValueChange={(value) =>
-                            handleCheckoutDataChange("country", value)
-                          }
-                          disabled // Locked to Ukraine
-                        >
-                          <SelectTrigger id="country" className="w-full">
-                            <SelectValue placeholder="Виберіть країну" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="ukraine">
-                              <div className="flex items-center">
-                                <Flag className="h-4 w-4 mr-2" />
-                                Україна
-                              </div>
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="city">Місто</Label>
-                        <Input
-                          id="city"
-                          value={checkoutData.city}
-                          onChange={(e) =>
-                            handleCheckoutDataChange("city", e.target.value)
-                          }
-                          placeholder="Введіть назву міста"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="deliveryService">Служба доставки</Label>
-                        <Select
-                          value={checkoutData.deliveryService}
-                          onValueChange={(value) =>
-                            handleCheckoutDataChange("deliveryService", value)
-                          }
-                        >
-                          <SelectTrigger
-                            id="deliveryService"
-                            className="w-full"
-                          >
-                            <SelectValue placeholder="Виберіть спосіб доставки" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="novaposhta">
-                              <div className="flex items-center">
-                                <Truck className="h-4 w-4 mr-2" />
-                                Нова Пошта
-                              </div>
-                            </SelectItem>
-                            <SelectItem value="ukrposhta">
-                              <div className="flex items-center">
-                                <Truck className="h-4 w-4 mr-2" />
-                                Укрпошта
-                              </div>
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {checkoutData.deliveryService && (
-                        <div className="space-y-2">
-                          <Label htmlFor="postalOffice">
-                            Номер поштового відділення
-                          </Label>
-                          <div className="relative">
-                            <Input
-                              id="postalOffice"
-                              value={checkoutData.postalOffice}
-                              onChange={(e) =>
-                                handleCheckoutDataChange(
-                                  "postalOffice",
-                                  e.target.value
-                                )
-                              }
-                              placeholder="Вкажіть номер відділення"
-                              className="pr-10"
-                            />
-                            <MapPin className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {checkoutData.deliveryService === "novaposhta"
-                              ? "Вкажіть номер відділення Нової Пошти для доставки"
-                              : "Вкажіть номер відділення Укрпошти для доставки"}
-                          </p>
-                        </div>
-                      )}
-
-                      <div className="space-y-3">
-                        <Label>Спосіб оплати</Label>
-                        <RadioGroup
-                          value={checkoutData.paymentMethod}
-                          onValueChange={(value) =>
-                            handleCheckoutDataChange("paymentMethod", value)
-                          }
-                          className="flex flex-col space-y-1"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem
-                              value="prepayment"
-                              id="prepayment"
-                            />
-                            <Label
-                              htmlFor="prepayment"
-                              className="flex items-center"
-                            >
-                              <CreditCard className="h-4 w-4 mr-2" />
-                              Передоплата
-                            </Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="cod" id="cod" />
-                            <Label htmlFor="cod" className="flex items-center">
-                              <CreditCard className="h-4 w-4 mr-2" />
-                              Оплата при отриманні
-                            </Label>
-                          </div>
-                        </RadioGroup>
-                      </div>
-
-                      {checkoutData.paymentMethod === "prepayment" && (
-                        <Alert className="bg-blue-50 border-blue-200">
-                          <AlertCircle className="h-4 w-4 text-blue-600" />
-                          <AlertDescription className="text-sm text-blue-800">
-                            <p className="font-medium">
-                              Інформація про оплату:
-                            </p>
-                            <p>
-                              Номер заказа: <strong>{orderId}</strong>
-                            </p>
-                            <p>
-                              Після оформлення замовлення, будь ласка, надішліть
-                              оплату на такі реквізити:
-                            </p>
-                            <div className="mt-2 space-y-1">
-                              <p>
-                                IBAN: <strong>{paymentDetails.iban}</strong>
-                              </p>
-                              <p>
-                                Карта:{" "}
-                                <strong>{paymentDetails.cardNumber}</strong>
-                              </p>
-                              <p>
-                                Банк: <strong>{paymentDetails.bankName}</strong>
-                              </p>
-                              <p>
-                                Одержувач:{" "}
-                                <strong>{paymentDetails.recipientName}</strong>
-                              </p>
-                            </div>
-                            <p className="mt-2">
-                              Після оплати, будь ласка, надішліть підтвердження
-                              платежу через обраний вами месенджер.
-                            </p>
-                          </AlertDescription>
-                        </Alert>
-                      )}
 
                       <div className="space-y-3">
                         <Label>Переважний спосіб зв'язку</Label>
@@ -676,28 +415,42 @@ const Cart = () => {
                               Viber
                             </Label>
                           </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="whatsapp" id="whatsapp" />
-                            <Label
-                              htmlFor="whatsapp"
-                              className="flex items-center"
-                            >
-                              <Phone className="h-4 w-4 mr-2" />
-                              WhatsApp
-                            </Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="email" id="email" />
-                            <Label
-                              htmlFor="email"
-                              className="flex items-center"
-                            >
-                              <Mail className="h-4 w-4 mr-2" />
-                              Email
-                            </Label>
-                          </div>
                         </RadioGroup>
                       </div>
+
+                      {/* <Alert className="bg-blue-50 border-blue-200">
+                        <AlertCircle className="h-4 w-4 text-blue-600" />
+                        <AlertDescription className="text-sm text-blue-800">
+                          <p className="font-medium">Інформація про оплату:</p>
+                          <p>
+                            Номер замовлення: <strong>{orderId}</strong>
+                          </p>
+                          <p>
+                            Після оформлення замовлення, будь ласка, надішліть
+                            оплату на такі реквізити:
+                          </p>
+                          <div className="mt-2 space-y-1">
+                            <p>
+                              IBAN: <strong>{paymentDetails.iban}</strong>
+                            </p>
+                            <p>
+                              Карта:{" "}
+                              <strong>{paymentDetails.cardNumber}</strong>
+                            </p>
+                            <p>
+                              Банк: <strong>{paymentDetails.bankName}</strong>
+                            </p>
+                            <p>
+                              Одержувач:{" "}
+                              <strong>{paymentDetails.recipientName}</strong>
+                            </p>
+                          </div>
+                          <p className="mt-2">
+                            Після оплати, будь ласка, надішліть підтвердження
+                            платежу через обраний вами месенджер.
+                          </p>
+                        </AlertDescription>
+                      </Alert> */}
                     </div>
                   </div>
 

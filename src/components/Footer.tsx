@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Instagram, Phone, Mail, ExternalLink } from "lucide-react";
+import { Instagram, Phone, Mail } from "lucide-react";
 import { MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -13,11 +13,11 @@ export type FooterConfig = {
     email: string;
     phone: string;
   };
-  policies: {
-    privacy: string;
-    terms: string;
-    shipping: string;
-  };
+  // policies: {
+  //   privacy: string;
+  //   terms: string;
+  //   shipping: string;
+  // };
   messengers: {
     telegram?: string;
     viber?: string;
@@ -104,36 +104,18 @@ const Footer = () => {
   const [config, setConfig] = useState<FooterConfig>({
     showSocials: true,
     socials: {
-      instagram: "#",
-      tiktok: "#",
+      instagram: "https://www.instagram.com/flexifunua/",
     },
     contacts: {
-      email: "info@lovable.dev",
-      phone: "+380 (XXX) XXX-XX-XX",
-    },
-    policies: {
-      privacy: "#",
-      terms: "#",
-      shipping: "#",
+      email: "flexifun707@gmail.com",
+      phone: "+380993867029",
     },
     messengers: {
-      telegram: "#",
-      viber: "#",
-      whatsapp: "#",
+      telegram: "https://t.me/FlexiFun_support",
+      // viber: "#",
+      // whatsapp: "#",
     },
   });
-
-  useEffect(() => {
-    // Load footer configuration from localStorage
-    const savedConfig = localStorage.getItem("footerConfig");
-    if (savedConfig) {
-      try {
-        setConfig(JSON.parse(savedConfig));
-      } catch (error) {
-        console.error("Failed to parse footer config", error);
-      }
-    }
-  }, []);
 
   return (
     <footer className="bg-gray-50 border-t border-gray-200">
@@ -157,7 +139,45 @@ const Footer = () => {
                 {config.contacts.phone}
               </a>
             </div>
+          </div>
 
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Інформація</h3>
+            {/* <ul className="space-y-2">
+              <li>
+                <a
+                  href={config.policies.privacy}
+                  className="flex items-center text-gray-600 hover:text-product transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Політика конфіденційності
+                </a>
+              </li>
+              <li>
+                <a
+                  href={config.policies.terms}
+                  className="flex items-center text-gray-600 hover:text-product transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Умови використання
+                </a>
+              </li>
+              <li>
+                <a
+                  href={config.policies.shipping}
+                  className="flex items-center text-gray-600 hover:text-product transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Доставка та оплата
+                </a>
+              </li>
+            </ul> */}
             {(config.messengers.telegram ||
               config.messengers.viber ||
               config.messengers.whatsapp) && (
@@ -200,45 +220,6 @@ const Footer = () => {
                 </div>
               </div>
             )}
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Інформація</h3>
-            <ul className="space-y-2">
-              <li>
-                <a
-                  href={config.policies.privacy}
-                  className="flex items-center text-gray-600 hover:text-product transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Політика конфіденційності
-                </a>
-              </li>
-              <li>
-                <a
-                  href={config.policies.terms}
-                  className="flex items-center text-gray-600 hover:text-product transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Умови використання
-                </a>
-              </li>
-              <li>
-                <a
-                  href={config.policies.shipping}
-                  className="flex items-center text-gray-600 hover:text-product transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Доставка та оплата
-                </a>
-              </li>
-            </ul>
           </div>
 
           {config.showSocials && (

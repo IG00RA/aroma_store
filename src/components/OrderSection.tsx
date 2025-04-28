@@ -10,7 +10,10 @@ import {
 import { ShieldCheck, Truck, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
-import heroImg from "../img/hero.webp";
+import beige from "../img/yellow.webp";
+import black from "../img/black.webp";
+import blue from "../img/blue.webp";
+import white from "../img/white.webp";
 
 const OrderSection = () => {
   const [quantity, setQuantity] = useState(1);
@@ -24,7 +27,7 @@ const OrderSection = () => {
   );
   const [productPrice, setProductPrice] = useState(899);
   const [currency, setCurrency] = useState("UAH");
-  const [productImage, setProductImage] = useState(heroImg);
+  const [productImage, setProductImage] = useState(white);
   const [colors, setColors] = useState([
     { value: "white", label: "Білий" },
     { value: "black", label: "Чорний" },
@@ -37,6 +40,15 @@ const OrderSection = () => {
   const [guaranteeInfo, setGuaranteeInfo] = useState(
     "Гарантія повернення грошей протягом 30 днів"
   );
+
+  // Map colors to images
+  const colorToImageMap = {
+    white: white,
+    black: black,
+    blue: blue,
+    beige: beige,
+  };
+
   // Load product data from localStorage on component mount
   useEffect(() => {
     const savedData = localStorage.getItem("productData");
@@ -46,7 +58,6 @@ const OrderSection = () => {
         setProductName(data.productName || productName);
         setProductPrice(Number(data.price) || productPrice);
         setCurrency(data.currency || currency);
-        setProductImage(data.imageUrl || productImage);
         if (data.colors && data.colors.length > 0) {
           setColors(data.colors);
           setColor(data.colors[0].value);
@@ -59,6 +70,11 @@ const OrderSection = () => {
     }
   }, []);
 
+  // Update product image when color changes
+  useEffect(() => {
+    setProductImage(colorToImageMap[color]);
+  }, [color]);
+
   const increaseQuantity = () => {
     setQuantity((prev) => prev + 1);
   };
@@ -69,7 +85,7 @@ const OrderSection = () => {
     }
   };
 
-  const getColorClass = (colorValue: string) => {
+  const getColorClass = (colorValue) => {
     switch (colorValue) {
       case "white":
         return "bg-product-white border border-gray-200";
@@ -84,12 +100,12 @@ const OrderSection = () => {
     }
   };
 
-  const getColorLabel = (colorValue: string) => {
+  const getColorLabel = (colorValue) => {
     const colorObj = colors.find((c) => c.value === colorValue);
     return colorObj ? colorObj.label : colorValue;
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price) => {
     const currencySymbol =
       currency === "UAH"
         ? "₴"

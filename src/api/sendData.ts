@@ -21,25 +21,12 @@ interface QueryParams {
   fbp?: string | null | undefined;
 }
 
-const ANALYTIC_BOT_TOKEN = import.meta.env.VITE_ANALYTIC_BOT_TOKEN || "";
-const ANALYTIC_CHAT_ID = import.meta.env.VITE_ANALYTIC_CHAT_ID || "";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const getDefaultUrl = (): string =>
   typeof window !== "undefined"
     ? document.referrer || "Не вказано"
     : "Не вказано";
-
-const url = getDefaultUrl();
-
-function getParamString(queryParams: QueryParams): string {
-  let message = "";
-  for (const key in queryParams) {
-    if (queryParams[key]) {
-      message += `${key} <b>${queryParams[key]}</b>\n`;
-    }
-  }
-  return message;
-}
 
 const getQueryParams = (): QueryParams => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -58,48 +45,46 @@ const getQueryParams = (): QueryParams => {
 };
 
 export const sendMessage = async (sendData: FormData): Promise<void> => {
-  let botMessage = `<b>${sendData.message}</b>\n`;
-  botMessage += `Імя: <b>${sendData.name}</b>\n`;
-  botMessage += `Прізвище: <b>${sendData.surname}</b>\n`;
-  botMessage += `Месенджер: <b>${sendData.messenger}</b>\n`;
-  botMessage += `Телефон: <b>${sendData.phone}</b>\n`;
-  botMessage += `Url: <b>${url}</b>\n`;
-
-  // Додавання інформації про товари
-  if (sendData.items && sendData.items.length > 0) {
-    botMessage += `\n<b>Товари:</b>\n`;
-    sendData.items.forEach((item, index) => {
-      botMessage += `${index + 1}. Колір: <b>${item.color}</b>, Кількість: <b>${
-        item.quantity
-      }</b>\n`;
-    });
-  }
-
   const params = getQueryParams();
-  botMessage += getParamString(params);
 
-  const urlBot = `https://api.telegram.org/bot${ANALYTIC_BOT_TOKEN}/sendMessage`;
+  // Prepare query string from params
+  const queryString = Object.entries(params)
+    .filter(([_, value]) => value)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`
+    )
+    .join("&");
+
   const payload = {
-    chat_id: ANALYTIC_CHAT_ID,
-    parse_mode: "html",
-    text: botMessage,
+    message: sendData.message,
+    name: sendData.name || "Не вказано",
+    surname: sendData.surname || "Не вказано",
+    messenger: sendData.messenger || "Не вказано",
+    phone: sendData.phone || "Не вказано",
+    items: sendData.items || [],
   };
 
   try {
-    const response = await fetch(urlBot, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    const response = await fetch(
+      `${API_URL}/api/send-extended-message${
+        queryString ? `?${queryString}` : ""
+      }`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to send data to Telegram: ${errorText}`);
+      throw new Error(`Failed to send data to server: ${errorText}`);
     }
   } catch (error) {
-    console.error("Error sending data to Telegram:", error);
-    throw new Error("Error sending data to Telegram: " + error);
+    console.error("Error sending data to server:", error);
+    throw new Error("Error sending data to server: " + error);
   }
 };

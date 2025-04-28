@@ -10,19 +10,19 @@ import seventhImg from "../img/7.webp";
 
 const GallerySection = () => {
   const [images, setImages] = useState([
-    { id: "1", src: firstImg, alt: "Держатель спереди" },
-    { id: "2", src: secondImg, alt: "Держатель сбоку" },
-    { id: "3", src: thirdImg, alt: "Держатель в использовании" },
-    { id: "4", src: fourthImg, alt: "Держатель в интерьере" },
-    { id: "5", src: fifthImg, alt: "Детали держателя" },
-    { id: "6", src: sixthImg, alt: "Детали держателя" },
-    { id: "7", src: seventhImg, alt: "Детали держателя" },
+    { id: "1", src: firstImg, alt: "Тримач спереду" },
+    { id: "2", src: secondImg, alt: "Тримач збоку" },
+    { id: "3", src: thirdImg, alt: "Тримач у використанні" },
+    { id: "4", src: fourthImg, alt: "Тримач в інтер'єрі" },
+    { id: "5", src: fifthImg, alt: "Деталі тримача" },
+    { id: "6", src: sixthImg, alt: "Деталі тримача" },
+    { id: "7", src: seventhImg, alt: "Деталі тримача" },
   ]);
 
   return (
     <section className="bg-product-beige/10">
       <div className="container-section">
-        <h2 className="section-title text-center">Взгляните ближе</h2>
+        <h2 className="section-title text-center">Погляньте ближче</h2>
 
         <div className="mt-12 max-w-5xl mx-auto">
           <Tabs defaultValue="image-1" className="w-full">
@@ -53,7 +53,7 @@ const GallerySection = () => {
                 >
                   <img
                     src={image.src}
-                    alt={`Миниатюра ${image.alt}`}
+                    alt={`Мініатюра ${image.alt}`}
                     className="w-full h-full object-contain rounded"
                   />
                 </TabsTrigger>

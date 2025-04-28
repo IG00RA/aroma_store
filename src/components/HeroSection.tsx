@@ -8,10 +8,10 @@ import heroImg from "../img/hero.webp";
 const HeroSection = () => {
   const { toast } = useToast();
   const [heroData, setHeroData] = useState({
-    title: "Элегантный держатель для ароматических палочек",
+    title: "Стильний тримач для пахощів",
     subtitle:
-      "Минималистичный дизайн, который преображает атмосферу вашего пространства, принося гармонию и эстетическое наслаждение",
-    buttonText: "Заказать сейчас",
+      "Унікальний дизайн, екологічні матеріали, ідеальне рішення для вашого інтер'єру",
+    buttonText: "Замовити зараз",
     imageUrl: heroImg,
   });
 
@@ -26,8 +26,8 @@ const HeroSection = () => {
   const handleOrderNow = () => {
     scrollToOrder();
     toast({
-      title: "Перейдите к заказу",
-      description: "Вы можете выбрать подходящий для вас вариант",
+      title: "Перейдіть до замовлення",
+      description: "Ви можете вибрати відповідний для вас варіант",
     });
   };
 
@@ -68,7 +68,7 @@ const HeroSection = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="inline-block px-4 py-1.5 bg-product-beige/50 text-product-dark rounded-full text-sm font-medium backdrop-blur-sm"
             >
-              Эксклюзивный дизайн
+              Ексклюзивний дизайн
             </motion.span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-montserrat font-bold leading-tight text-product-dark tracking-tight">
               <span className="relative inline-block">
@@ -116,7 +116,7 @@ const HeroSection = () => {
                 size="lg"
                 className="border-product text-product hover:bg-product/5 transition-all duration-300 px-8 rounded-xl"
               >
-                Узнать больше
+                Дізнатися більше
               </Button>
             </motion.div>
           </div>
@@ -135,7 +135,7 @@ const HeroSection = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-product-beige/20 to-transparent rounded-3xl rotate-3 shadow-md"></div>
             <motion.img
               src={heroData.imageUrl}
-              alt="Элегантный держатель для ароматических палочек"
+              alt="Стильний тримач для пахощів"
               className="relative z-10 w-full h-full object-contain rounded-3xl shadow-xl"
               initial={{ y: 20 }}
               animate={{ y: 0 }}
@@ -157,7 +157,7 @@ const HeroSection = () => {
                 repeatType: "reverse",
               }}
             >
-              <span className="text-sm font-medium">Эко</span>
+              <span className="text-sm font-medium">Еко</span>
             </motion.div>
             <motion.div
               className="absolute bottom-20 left-0 w-20 h-20 bg-product-beige/80 rounded-full shadow-lg flex items-center justify-center text-product-dark backdrop-blur-sm"
@@ -185,7 +185,7 @@ const HeroSection = () => {
         transition={{ delay: 1.5, duration: 0.8 }}
         whileHover={{ scale: 1.1 }}
       >
-        <span className="text-sm text-product-dark/70">Прокрутите вниз</span>
+        <span className="text-sm text-product-dark/70">Прокрутіть вниз</span>
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}

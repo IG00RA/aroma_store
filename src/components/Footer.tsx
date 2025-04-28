@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Instagram, Phone, Mail, ExternalLink } from 'lucide-react';
-import { MessageCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Instagram, Phone, Mail, ExternalLink } from "lucide-react";
+import { MessageCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export type FooterConfig = {
   showSocials: boolean;
@@ -104,33 +104,33 @@ const Footer = () => {
   const [config, setConfig] = useState<FooterConfig>({
     showSocials: true,
     socials: {
-      instagram: '#',
-      tiktok: '#'
+      instagram: "#",
+      tiktok: "#",
     },
     contacts: {
-      email: 'info@lovable.dev',
-      phone: '+380 (XXX) XXX-XX-XX'
+      email: "info@lovable.dev",
+      phone: "+380 (XXX) XXX-XX-XX",
     },
     policies: {
-      privacy: '#',
-      terms: '#',
-      shipping: '#'
+      privacy: "#",
+      terms: "#",
+      shipping: "#",
     },
     messengers: {
-      telegram: '#',
-      viber: '#',
-      whatsapp: '#'
-    }
+      telegram: "#",
+      viber: "#",
+      whatsapp: "#",
+    },
   });
 
   useEffect(() => {
     // Load footer configuration from localStorage
-    const savedConfig = localStorage.getItem('footerConfig');
+    const savedConfig = localStorage.getItem("footerConfig");
     if (savedConfig) {
       try {
         setConfig(JSON.parse(savedConfig));
       } catch (error) {
-        console.error('Failed to parse footer config', error);
+        console.error("Failed to parse footer config", error);
       }
     }
   }, []);
@@ -140,26 +140,34 @@ const Footer = () => {
       <div className="container-section py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">Контакты</h3>
+            <h3 className="text-lg font-semibold mb-4">Контакти</h3>
             <div className="space-y-2">
-              <a href={`mailto:${config.contacts.email}`} className="flex items-center text-gray-600 hover:text-product transition-colors">
+              <a
+                href={`mailto:${config.contacts.email}`}
+                className="flex items-center text-gray-600 hover:text-product transition-colors"
+              >
                 <Mail className="h-5 w-5 mr-2" />
                 {config.contacts.email}
               </a>
-              <a href={`tel:${config.contacts.phone.replace(/[^0-9+]/g, '')}`} className="flex items-center text-gray-600 hover:text-product transition-colors">
+              <a
+                href={`tel:${config.contacts.phone.replace(/[^0-9+]/g, "")}`}
+                className="flex items-center text-gray-600 hover:text-product transition-colors"
+              >
                 <Phone className="h-5 w-5 mr-2" />
                 {config.contacts.phone}
               </a>
             </div>
-            
-            {(config.messengers.telegram || config.messengers.viber || config.messengers.whatsapp) && (
+
+            {(config.messengers.telegram ||
+              config.messengers.viber ||
+              config.messengers.whatsapp) && (
               <div className="mt-4">
-                <h4 className="font-medium mb-2">Связаться с нами:</h4>
+                <h4 className="font-medium mb-2">Зв'язатися з нами:</h4>
                 <div className="flex space-x-3">
                   {config.messengers.telegram && (
-                    <a 
-                      href={config.messengers.telegram} 
-                      target="_blank" 
+                    <a
+                      href={config.messengers.telegram}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 hover:bg-product hover:text-white transition-colors"
                       aria-label="Telegram"
@@ -168,9 +176,9 @@ const Footer = () => {
                     </a>
                   )}
                   {config.messengers.viber && (
-                    <a 
-                      href={config.messengers.viber} 
-                      target="_blank" 
+                    <a
+                      href={config.messengers.viber}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 hover:bg-product hover:text-white transition-colors"
                       aria-label="Viber"
@@ -179,9 +187,9 @@ const Footer = () => {
                     </a>
                   )}
                   {config.messengers.whatsapp && (
-                    <a 
-                      href={config.messengers.whatsapp} 
-                      target="_blank" 
+                    <a
+                      href={config.messengers.whatsapp}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 hover:bg-product hover:text-white transition-colors"
                       aria-label="WhatsApp"
@@ -193,53 +201,53 @@ const Footer = () => {
               </div>
             )}
           </div>
-          
+
           <div>
-            <h3 className="text-lg font-semibold mb-4">Информация</h3>
+            <h3 className="text-lg font-semibold mb-4">Інформація</h3>
             <ul className="space-y-2">
               <li>
-                <a 
-                  href={config.policies.privacy} 
+                <a
+                  href={config.policies.privacy}
                   className="flex items-center text-gray-600 hover:text-product transition-colors"
-                  target="_blank" 
+                  target="_blank"
                   rel="noopener noreferrer"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Политика конфиденциальности
+                  Політика конфіденційності
                 </a>
               </li>
               <li>
-                <a 
-                  href={config.policies.terms} 
+                <a
+                  href={config.policies.terms}
                   className="flex items-center text-gray-600 hover:text-product transition-colors"
-                  target="_blank" 
+                  target="_blank"
                   rel="noopener noreferrer"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Условия использования
+                  Умови використання
                 </a>
               </li>
               <li>
-                <a 
-                  href={config.policies.shipping} 
+                <a
+                  href={config.policies.shipping}
                   className="flex items-center text-gray-600 hover:text-product transition-colors"
-                  target="_blank" 
+                  target="_blank"
                   rel="noopener noreferrer"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Доставка и оплата
+                  Доставка та оплата
                 </a>
               </li>
             </ul>
           </div>
-          
+
           {config.showSocials && (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Мы в соцсетях</h3>
+              <h3 className="text-lg font-semibold mb-4">Ми в соцмережах</h3>
               <div className="flex space-x-4">
                 {config.socials.instagram && (
-                  <a 
-                    href={config.socials.instagram} 
+                  <a
+                    href={config.socials.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 hover:bg-product hover:text-white transition-colors"
@@ -249,8 +257,8 @@ const Footer = () => {
                   </a>
                 )}
                 {config.socials.tiktok && (
-                  <a 
-                    href={config.socials.tiktok} 
+                  <a
+                    href={config.socials.tiktok}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 hover:bg-product hover:text-white transition-colors"
@@ -263,9 +271,9 @@ const Footer = () => {
             </div>
           )}
         </div>
-        
+
         <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-500 text-sm">
-          © 2025 Mustage.dev. Все права защищены.
+          © 2025 Mustage.dev. Усі права захищені.
         </div>
       </div>
     </footer>

@@ -19,7 +19,7 @@ const HeroEditor = () => {
   const [subtitle, setSubtitle] = useState(
     "Уникальный дизайн, экологичные материалы, идеальное решение для вашего интерьера"
   );
-  const [buttonText, setButtonText] = useState("Заказать сейчас");
+  const [buttonText, setButtonText] = useState("Замовити зараз");
   const [imageUrl, setImageUrl] = useState("/placeholder.svg");
 
   // Load saved data from localStorage on mount
@@ -32,7 +32,7 @@ const HeroEditor = () => {
         subtitle ||
           "Уникальный дизайн, экологичные материалы, идеальное решение для вашего интерьера"
       );
-      setButtonText(buttonText || "Заказать сейчас");
+      setButtonText(buttonText || "Замовити зараз");
       setImageUrl(imageUrl || "/placeholder.svg");
     }
   }, []);

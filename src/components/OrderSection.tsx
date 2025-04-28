@@ -20,24 +20,23 @@ const OrderSection = () => {
 
   // State for product data
   const [productName, setProductName] = useState(
-    "Держатель для ароматических палочек"
+    "Тримач для ароматичних паличок"
   );
   const [productPrice, setProductPrice] = useState(899);
   const [currency, setCurrency] = useState("UAH");
   const [productImage, setProductImage] = useState(heroImg);
   const [colors, setColors] = useState([
-    { value: "white", label: "Белый" },
-    { value: "black", label: "Черный" },
-    { value: "blue", label: "Голубой" },
-    { value: "beige", label: "Бежевый" },
+    { value: "white", label: "Білий" },
+    { value: "black", label: "Чорний" },
+    { value: "blue", label: "Блакитний" },
+    { value: "beige", label: "Бежевий" },
   ]);
   const [deliveryInfo, setDeliveryInfo] = useState(
-    "Доставка по всей Украине. Срок доставки: 3-7 рабочих дней"
+    "Доставка по всій Україні. Термін доставки: 3-7 робочих днів"
   );
   const [guaranteeInfo, setGuaranteeInfo] = useState(
-    "Гарантия возврата денег в течение 30 дней"
+    "Гарантія повернення грошей протягом 30 днів"
   );
-
   // Load product data from localStorage on component mount
   useEffect(() => {
     const savedData = localStorage.getItem("productData");
@@ -113,7 +112,7 @@ const OrderSection = () => {
     });
 
     toast({
-      title: "Товар добавлен в корзину",
+      title: "Товар додано до кошика",
       description: `${productName} (${getColorLabel(color)}) - ${quantity} шт.`,
     });
   };
@@ -143,11 +142,11 @@ const OrderSection = () => {
                 {/* Color Selection */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Выберите цвет
+                    Виберіть колір
                   </label>
                   <Select value={color} onValueChange={setColor}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Выберите цвет" />
+                      <SelectValue placeholder="Виберіть колір" />
                     </SelectTrigger>
                     <SelectContent>
                       {colors.map((color) => (
@@ -169,7 +168,7 @@ const OrderSection = () => {
                 {/* Quantity */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Количество
+                    Кількість
                   </label>
                   <div className="flex items-center border rounded-md w-fit">
                     <button
@@ -208,7 +207,7 @@ const OrderSection = () => {
                   onClick={handleAddToCart}
                 >
                   <ShoppingBag className="h-5 w-5" />
-                  Добавить в корзину
+                  Додати в кошик
                 </Button>
               </div>
             </div>

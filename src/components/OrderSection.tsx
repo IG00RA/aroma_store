@@ -25,7 +25,7 @@ const OrderSection = () => {
   const [productName, setProductName] = useState(
     "Тримач для ароматичних паличок"
   );
-  const [productPrice, setProductPrice] = useState(899);
+  const [productPrice, setProductPrice] = useState(299);
   const [currency, setCurrency] = useState("UAH");
   const [productImage, setProductImage] = useState(white);
   const [colors, setColors] = useState([

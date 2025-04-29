@@ -143,7 +143,7 @@ const OrderSection = () => {
               <img
                 src={productImage}
                 alt={productName}
-                className="max-h-[300px] object-contain"
+                className="max-h-[100%] object-contain"
               />
             </div>
 

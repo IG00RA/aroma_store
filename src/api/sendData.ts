@@ -23,11 +23,6 @@ interface QueryParams {
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-const getDefaultUrl = (): string =>
-  typeof window !== "undefined"
-    ? document.referrer || "Не вказано"
-    : "Не вказано";
-
 const getQueryParams = (): QueryParams => {
   const searchParams = new URLSearchParams(window.location.search);
   return {
@@ -41,6 +36,7 @@ const getQueryParams = (): QueryParams => {
     sub7: searchParams.get("sub7"),
     sub8: searchParams.get("sub8"),
     fbp: searchParams.get("fbp"),
+    ttp: searchParams.get("ttp"),
   };
 };
 

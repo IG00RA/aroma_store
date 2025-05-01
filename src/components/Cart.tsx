@@ -8,25 +8,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  ShoppingCart,
-  X,
-  Plus,
-  Minus,
-  Trash2,
-  Phone,
-  Mail,
-  CreditCard,
-} from "lucide-react";
+import { ShoppingCart, X, Plus, Minus, Trash2, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router-dom";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
 import { sendMessage } from "@/api/sendData";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type CheckoutData = {
   firstName: string;
@@ -43,7 +32,6 @@ interface PaymentDetails {
 }
 
 const Cart = () => {
-  const navigate = useNavigate();
   const {
     items,
     removeFromCart,
@@ -55,6 +43,8 @@ const Cart = () => {
     setIsCartOpen,
   } = useCart();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [step, setStep] = useState<"cart" | "checkout">(
     items.length > 0 ? "cart" : "checkout"
@@ -192,7 +182,7 @@ const Cart = () => {
 
       clearCart();
       setIsCartOpen(false);
-      navigate("/thank-you");
+      navigate(`/thank-you${location.search}`);
     } catch (error) {
       toast({
         title: "Помилка",

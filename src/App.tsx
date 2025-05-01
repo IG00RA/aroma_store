@@ -10,6 +10,7 @@ import ThankYou from "./pages/ThankYou";
 import { CartProvider } from "./context/CartContext";
 import { Suspense } from "react";
 import { FacebookPixel } from "./components/FacebookPixel/FacebookPixel";
+import { TikTokPixel } from "./components/TikTokPixel/TikTokPixel";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           </Routes>
           <Suspense fallback={null}>
             <FacebookPixel />
+            <TikTokPixel />
           </Suspense>
         </BrowserRouter>
       </CartProvider>

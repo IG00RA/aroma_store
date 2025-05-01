@@ -13,6 +13,7 @@ export const FacebookPixel: React.FC = () => {
         ReactPixel.init(fbpId);
         ReactPixel.pageView();
         if (location.pathname === `/thank-you`) {
+          console.log(123);
           ReactPixel.track("Lead", {});
         }
       });
